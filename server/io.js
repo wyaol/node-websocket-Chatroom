@@ -4,7 +4,8 @@ const io = require('socket.io')({
     allowedHeaders: ["my-custom-header"],
     credentials: true,
   },
-  serveClient:false
+  serveClient:false,
+  maxHttpBufferSize:1e8
 });
 const jwt=require("./jwt");
 const store=require("./store");
