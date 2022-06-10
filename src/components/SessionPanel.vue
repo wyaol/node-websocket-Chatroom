@@ -53,6 +53,7 @@
   import {expressions} from './emoji';
   import AlterMessage from "./Message";
   import {EMOJI_BASE_URL} from "./config";
+  import axios from "axios";
   export default {
     name: "SessionPanel",
     props:{
@@ -122,12 +123,27 @@
           AlterMessage.warning("图片大小不能超过10M!");
           return
         }
-        let reader = new FileReader();
-        reader.readAsDataURL(file); // 读出 base64
-        reader.onloadend =()=> {
-          let html="<img src='"+reader.result+"'>";
-          this.sendMessage(html,'image')
-        };
+        this.saveImage(file).then(url => {
+          this.sendMessage("<img src='"+"image/"+url+"'>",'image')
+        })
+        // let reader = new FileReader();
+        // reader.readAsDataURL(file); // 读出 base64
+        // reader.onloadend =()=> {
+        //   let html="<img src='"+reader.result+"'>";
+        //   this.sendMessage(html,'image')
+        // };
+      },
+      saveImage(file){
+        const param = new FormData();
+        param.append(file.name, file)
+        const config = {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+        return axios.post('/image/upload/', param, config).then(res => {
+          return res.data.urls[0].url
+        });
       },
       sendMessage(html,type){
         this.$emit("sendMessage",html,type,this.session)

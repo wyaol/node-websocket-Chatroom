@@ -8,13 +8,13 @@ module.exports={
   },
   devServer:{
     proxy: {
-      '': {
-        target: process.env.PROXY_SERVER,
-        ws:true
-      },
       '/socket.io': {
         target: process.env.PROXY_SERVER,
         ws:true
+      },
+      '/image': {
+        target: process.env.IMAGE_PROXY_SERVER,
+        pathRewrite: {'^/image' : ''}
       }
     }
   }
