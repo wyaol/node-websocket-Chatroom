@@ -98,6 +98,10 @@
                 <span class="ui-label">消息时间</span>
                 <UiSwitch class="ui-right" v-model="setting.isTime"></UiSwitch>
               </li>
+              <li>
+                <span class="ui-label">退出登录</span>
+                <button class="ui-right" type="button" @click="userLogout()">退出登录</button>
+              </li>
             </ul>
           </div>
         </div>
@@ -201,6 +205,10 @@
               <span class="ui-label">消息时间</span>
               <UiSwitch class="ui-right" v-model="setting.isTime"></UiSwitch>
             </li>
+            <li>
+                <span class="ui-label">退出登录</span>
+                <button class="ui-right" type="button" @click="userLogout()">退出登录</button>
+              </li>
           </ul>
         </div>
         <div class="app-iChat-panel" v-show="curMenu==='about'">
@@ -364,8 +372,8 @@
         about:{
           version:"v1.0",
           license:"MIT",
-          author:"cleverqin",
-          email:"705597001@qq.com",
+          author:"xxxx",
+          email:"xxxx@qq.com",
           github:"https://github.com/cleverqin/node-websocket-Chatroom"
         },
         loginUser:{},
@@ -468,6 +476,11 @@
         }else {
           this.socket.emit('login',user)
         }
+      },
+      userLogout() {
+        localStorage.clear();
+        this.loginUser={};
+        location.reload()
       },
       playAudio() {
         const $audio=this.$refs['audio'];
