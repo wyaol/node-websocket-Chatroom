@@ -112,7 +112,7 @@
         this.isShowExpression=false;
       },
       fileChange(e){
-        const reg = /\.(?:png|jpg|jepg)$/i;
+        const reg = /\.(?:png|jpg|jpeg)$/i;
         let file=e.target.files[0];
         if(!reg.test(file.name)){
           AlterMessage.warning("请选择正确格式的图片文件!");
@@ -123,6 +123,7 @@
           AlterMessage.warning("图片大小不能超过10M!");
           return
         }
+        AlterMessage.success("图片选择成功，正在发送中，请稍等!");
         this.saveImage(file).then(url => {
           this.sendMessage("<img src='"+"image/"+url+"'>",'image')
         })
