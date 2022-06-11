@@ -1,7 +1,7 @@
 <template>
   <div class="chat-app-warp">
-    <UserLogin v-if="!loginUser.id" @login="userLogin" :type="deviceType" v-drag></UserLogin>
-    <div class="app-main-panel ui-clear" v-drag v-if="loginUser.id&&deviceType==='pc'">
+    <UserLogin v-if="!token" @login="userLogin" :type="deviceType" v-drag></UserLogin>
+    <div class="app-main-panel ui-clear" v-drag v-if="token&&deviceType==='pc'">
       <div class="app-aside-panel">
         <div class="app-user-avatar">
           <img :src="loginUser.avatarUrl" @mousedown.stop alt="" :title="loginUser.name">
@@ -143,7 +143,7 @@
       </div>
       <span class="iconfont icon-09" v-if="socket&&!isConnect" title="断线重连"></span>
     </div>
-    <div class="app-main-touch" v-if="loginUser.id&&deviceType==='phone'">
+    <div class="app-main-touch" v-if="token&&deviceType==='phone'">
       <div class="app-iChat-container">
         <div class="app-iChat-panel"  v-show="curMenu==='chat'">
           <div class="iChat-search-warp">
@@ -282,18 +282,19 @@
 </template>
 
 <script>
-  import UserItem from "./UserItem";
-  import UiSessionPanel from "./UiSessionPanel";
-  import UiChatBubble from "./UiChatBubble";
-  import UiSwitch from "./UiSwitch";
-  import UserLogin from "./UserLogin";
-  import SessionPanel from "./SessionPanel";
-  import {getDeviceType} from "./emoji";
-  import Message from "./Message";
-  import { Manager } from 'socket.io-client';
-  import {friendlyTime,formatTime} from './filters'
-  import { BELL_URL } from "./config";
-  export default {
+import UserItem from "./UserItem";
+import UiSessionPanel from "./UiSessionPanel";
+import UiChatBubble from "./UiChatBubble";
+import UiSwitch from "./UiSwitch";
+import UserLogin from "./UserLogin";
+import SessionPanel from "./SessionPanel";
+import {getDeviceType} from "./emoji";
+import Message from "./Message";
+import {Manager} from 'socket.io-client';
+import {formatTime, friendlyTime} from './filters'
+import {BELL_URL} from "./config";
+
+export default {
     name: "chat-app",
     components:{
       UserItem,
@@ -377,7 +378,7 @@
           github:"https://github.com/cleverqin/node-websocket-Chatroom"
         },
         loginUser:{},
-        token:"",
+        token:localStorage.getItem('token'),
         deviceType:type,
         audioSrc:BELL_URL,
         socketURL:window._HOST||'',
@@ -490,9 +491,12 @@
       },
       initSocket(){
         let _this=this;
-        const manager = new Manager(this.socketURL);
-        const socket = manager.socket("/");
-        _this.socket=socket;
+        const manager = new Manager(this.socketURL, {
+          extraHeaders: {
+            "token": localStorage.getItem('token')
+          }
+        });
+        _this.socket = manager.socket("/");
         _this.socket.on("error",()=>{
           console.log("出错了！！")
         })
@@ -537,6 +541,7 @@
         _this.loginUser=data.user;
         _this.token=data.token;
         _this.users=users;
+        localStorage.setItem('token', data.token)
       },
       loginFail(message){
         Message.error(message);

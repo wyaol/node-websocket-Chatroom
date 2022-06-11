@@ -92,12 +92,6 @@
       this.avatarList=list;
       this.randomAvatar();
     },
-    mounted() {
-      const username = localStorage.getItem('username');
-      if (username) {
-        this.user.name = username
-      }
-    },
     methods:{
       toggleAvatarSelect(){
         if(this.isShow){
@@ -130,7 +124,6 @@
           Message.error("请输入用户名称！");
           return
         }
-        localStorage.setItem('username', this.user.name)
         this.$emit("login",this.user)
       },
       randomQQ() {
