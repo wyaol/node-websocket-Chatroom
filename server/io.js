@@ -54,6 +54,7 @@ const util={
     const users=await this.getOnlineUsers();
     socket.user=user;
     socket.emit('loginSuccess', data, users);
+    store.getMessages().forEach(item => socket.emit('message', item.from, item.to, item.message, item.type))
   },
   //根据useragent判读设备类型
   getDeviceType(userAgent){
