@@ -538,10 +538,15 @@ export default {
       },
       loginSuccess(data,users){
         const _this=this;
-        _this.loginUser=data.user;
-        _this.token=data.token;
-        _this.users=users;
-        localStorage.setItem('token', data.token)
+        console.log(users)
+        if (users.filter(user => user.name === data.user.name).length === 0) {
+          _this.loginUser = data.user;
+          _this.token = data.token;
+          _this.users = users;
+          localStorage.setItem('token', data.token);
+        } else {
+          _this.token = null
+        }
       },
       loginFail(message){
         Message.error(message);
